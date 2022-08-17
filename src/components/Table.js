@@ -4,7 +4,7 @@ import Filters from './Filters';
 import Context from './Context';
 
 function Table() {
-  const { planetList } = useContext(Context);
+  const { nameFilter } = useContext(Context);
   return (
     <div>
       <h1>Star Wars Planets</h1>
@@ -30,7 +30,7 @@ function Table() {
           </tr>
         </thead>
         {
-          planetList.map((planet, index) => (
+          nameFilter.map((planet, index) => (
             <tbody key={ index }>
               <tr>
                 <td>{planet.name}</td>
