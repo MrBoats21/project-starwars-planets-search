@@ -1,11 +1,13 @@
 import React from 'react';
 import './App.css';
-
-// Iniciando o projeto
+import Provider from './components/Provider';
+import Table from './components/Table';
 
 function App() {
   return (
-    <span>Hello, App!</span>
+    <Provider>
+      <Table />
+    </Provider>
   );
 }
 
