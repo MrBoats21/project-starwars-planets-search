@@ -1,40 +1,20 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
-import Context from './Context';
+import Context from '../context/Context';
 
 function Filters() {
+  const [selectedColummn, setSelectedColumn] = useState('');
+
   const {
-    planetList,
-    setNameFilter,
-    nameFilter,
-    setFilterList,
-    filterList } = useContext(Context);
+    filterList,
+    filterByName,
+    filterByPlanetSpecs,
+    addFilter,
+  } = useContext(Context);
 
-  function filterByName({ target: { value } }) {
-    const filter = planetList
-      .filter((planet) => planet.name.toLowerCase().includes(value));
-    setNameFilter(filter);
-  }
-
-  function filterByPlanetSpecs({ target: { value, name } }) {
-    setFilterList({ ...filterList,
-      planetSpecs: { ...filterList.planetSpecs,
-        [name]: value } });
-  }
-
-  function addFilter() {
-    const { planetSpecs: { column, comparison, value } } = filterList;
-    const filter = nameFilter.filter((planet) => {
-      if (comparison === 'maior que') {
-        return Number(planet[column]) > Number(value);
-      }
-      if (comparison === 'menor que') {
-        return Number(planet[column]) < Number(value);
-      }
-      return Number(planet[column]) === Number(value);
-    });
-    setNameFilter(filter);
-  }
+  const columnOptions = [
+    'population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water',
+  ].filter((column) => column !== selectedColummn);
 
   return (
     <div className="filters">
@@ -47,14 +27,14 @@ function Filters() {
       <div>
         <select
           data-testid="column-filter"
+          id="options"
           onChange={ filterByPlanetSpecs }
           name="column"
         >
-          <option value="population">population</option>
-          <option value="orbital_period">orbital_period</option>
-          <option value="diameter">diameter</option>
-          <option value="rotation_period">rotation_period</option>
-          <option value="surface_water">surface_water</option>
+          {columnOptions.map((column) => (
+            <option key={ column }>{column}</option>
+          ))}
+          {columnOptions.filter((column) => column !== selectedColummn)}
         </select>
 
         <select
@@ -78,8 +58,12 @@ function Filters() {
 
         <button
           data-testid="button-filter"
-          onClick={ addFilter }
           type="button"
+          onClick={ () => {
+            const choosed = document.getElementById('options').value;
+            setSelectedColumn(choosed);
+            addFilter();
+          } }
         >
           Add Filter
         </button>

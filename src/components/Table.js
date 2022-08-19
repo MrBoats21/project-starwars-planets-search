@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import '../App.css';
 import Filters from './Filters';
-import Context from './Context';
+import Context from '../context/Context';
 
 function Table() {
   const { nameFilter } = useContext(Context);
@@ -33,7 +33,7 @@ function Table() {
           nameFilter.map((planet, index) => (
             <tbody key={ index }>
               <tr>
-                <td>{planet.name}</td>
+                <td id={ planet.name }>{planet.name}</td>
                 <td>{planet.rotation_period}</td>
                 <td>{planet.orbital_period}</td>
                 <td>{planet.diameter}</td>
