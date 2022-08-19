@@ -1,80 +1,109 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 import Context from '../context/Context';
 
 function Filters() {
-  const [selectedColummn, setSelectedColumn] = useState('[]');
-
   const {
+    planetList,
+    setNameFilter,
+    setFilterList,
     filterList,
+    newFilter,
+    setNewFilter,
     filterByName,
     filterByPlanetSpecs,
-    addFilter,
   } = useContext(Context);
 
   const columnOptions = [
-    'population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water',
-  ].filter((column) => column !== selectedColummn);
+    'population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water',
+  ];
 
-  // const columnOptions = [
-  //   'population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water',
-  // ];
+  const [filterByOptions, setFilterByOptions] = useState([]);
+  const [columns, setColumns] = useState(columnOptions);
+
+  useEffect(() => {
+    const ApplyFilter = newFilter.reduce((acc, curr) => {
+      const { column, comparison, value } = curr;
+      acc = acc.filter((planet) => {
+        if (comparison === 'maior que') {
+          return Number(planet[column]) > Number(value);
+        }
+        if (comparison === 'menor que') {
+          return Number(planet[column]) < Number(value);
+        }
+        return Number(planet[column]) === Number(value);
+      });
+      return acc;
+    }, planetList);
+    setNameFilter(ApplyFilter);
+  }, [newFilter, planetList, setNameFilter]);
+
+  function addFilter() {
+    const { planetSpecs,
+      planetSpecs: { column, comparison, value } } = filterList;
+    if (column) {
+      setNewFilter([...newFilter, planetSpecs]);
+      setFilterByOptions([...filterByOptions, `${column} ${comparison} ${value}`]);
+      setColumns(columns.filter((option) => option !== column));
+      setFilterList({ ...filterList,
+        planetSpecs: { ...filterList.planetSpecs,
+          column: '' } });
+    }
+  }
 
   return (
     <div className="filters">
+
       <input
         data-testid="name-filter"
         type="text"
         onChange={ filterByName }
         placeholder="Planet name"
       />
-      <div>
-        <select
-          data-testid="column-filter"
-          id="options"
-          onChange={ filterByPlanetSpecs }
-          name="column"
-        >
-          {columnOptions.map((column) => (
-            <option key={ column }>{column}</option>
-          ))}
-        </select>
 
-        <select
-          data-testid="comparison-filter"
-          onChange={ filterByPlanetSpecs }
-          name="comparison"
-        >
-          <option value="maior que">maior que</option>
-          <option value="menor que">menor que</option>
-          <option value="igual a">igual a</option>
-        </select>
+      <select
+        data-testid="column-filter"
+        onChange={ filterByPlanetSpecs }
+        onClick={ filterByPlanetSpecs }
+        name="column"
+      >
+        { columns.map((option) => (
+          <option key={ option }>
+            { option }
+          </option>)) }
+      </select>
 
-        <input
-          data-testid="value-filter"
-          onChange={ filterByPlanetSpecs }
-          type="number"
-          min={ 0 }
-          value={ filterList.planetSpecs.value }
-          name="value"
-        />
+      <select
+        data-testid="comparison-filter"
+        onChange={ filterByPlanetSpecs }
+        name="comparison"
+      >
+        <option value="maior que">maior que</option>
+        <option value="menor que">menor que</option>
+        <option value="igual a">igual a</option>
+      </select>
 
-        <button
-          data-testid="button-filter"
-          type="button"
-          onClick={ () => {
-            const choosed = document.getElementById('options').value;
-            setSelectedColumn(choosed);
-            addFilter();
-            console.log(columnOptions);
-            console.log(filterList);
-          } }
-        >
-          Add Filter
-        </button>
-      </div>
+      <input
+        data-testid="value-filter"
+        onChange={ filterByPlanetSpecs }
+        type="number"
+        value={ filterList.planetSpecs.value }
+        name="value"
+      />
 
+      <button
+        data-testid="button-filter"
+        onClick={ addFilter }
+        type="button"
+      >
+        Aplicar Filtro
+      </button>
     </div>
   );
 }
+
 export default Filters;

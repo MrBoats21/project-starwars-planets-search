@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
 import { object } from 'prop-types';
+import React, { useEffect } from 'react';
 import Context from './Context';
 
 function Provider({ children }) {
@@ -26,29 +26,16 @@ function Provider({ children }) {
 
   function filterByName({ target: { value } }) {
     const filter = planetList
-      .filter((planet) => planet.name.toUpperCase()
-        .includes(value.toUpperCase()));
+      .filter((planet) => planet.name.toLowerCase().includes(value));
     setNameFilter(filter);
   }
 
   function filterByPlanetSpecs({ target: { value, name } }) {
-    setFilterList({ ...filterList,
-      planetSpecs: { ...filterList.planetSpecs,
-        [name]: value } });
-  }
-
-  function addFilter() {
-    const { planetSpecs: { column, comparison, value } } = filterList;
-    const filter = nameFilter.filter((planet) => {
-      if (comparison === 'maior que') {
-        return Number(planet[column]) > Number(value);
-      }
-      if (comparison === 'menor que') {
-        return Number(planet[column]) < Number(value);
-      }
-      return Number(planet[column]) === Number(value);
-    });
-    setNameFilter(filter);
+    if (name) {
+      setFilterList({ ...filterList,
+        planetSpecs: { ...filterList.planetSpecs,
+          [name]: value } });
+    }
   }
 
   const contextValue = {
@@ -56,14 +43,14 @@ function Provider({ children }) {
     setPlanetList,
     nameFilter,
     setNameFilter,
-    filterList,
-    setFilterList,
+    newFilter,
+    setNewFilter,
     filterByName,
     filterByPlanetSpecs,
-    newFilter,
-    addFilter,
-    setNewFilter,
+    filterList,
+    setFilterList,
   };
+
   return (
     <Context.Provider value={ contextValue }>
       {children}
