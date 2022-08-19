@@ -35,7 +35,7 @@ function Filters() {
           onChange={ filterByPlanetSpecs }
           name="column"
         >
-          {columnOptions.filter((column) => column !== selectedColummn).map((column) => (
+          {columnOptions.map((column) => (
             <option key={ column }>{column}</option>
           ))}
         </select>
@@ -63,9 +63,9 @@ function Filters() {
           data-testid="button-filter"
           type="button"
           onClick={ () => {
-            addFilter();
             const choosed = document.getElementById('options').value;
             setSelectedColumn(choosed);
+            addFilter();
             console.log(columnOptions);
             console.log(filterList);
           } }
