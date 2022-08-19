@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react';
 import Context from '../context/Context';
 
 function Filters() {
-  const [selectedColummn, setSelectedColumn] = useState('');
+  const [selectedColummn, setSelectedColumn] = useState('[]');
 
   const {
     filterList,
@@ -15,6 +15,10 @@ function Filters() {
   const columnOptions = [
     'population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water',
   ].filter((column) => column !== selectedColummn);
+
+  // const columnOptions = [
+  //   'population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water',
+  // ];
 
   return (
     <div className="filters">
@@ -31,10 +35,9 @@ function Filters() {
           onChange={ filterByPlanetSpecs }
           name="column"
         >
-          {columnOptions.map((column) => (
+          {columnOptions.filter((column) => column !== selectedColummn).map((column) => (
             <option key={ column }>{column}</option>
           ))}
-          {columnOptions.filter((column) => column !== selectedColummn)}
         </select>
 
         <select
@@ -60,9 +63,11 @@ function Filters() {
           data-testid="button-filter"
           type="button"
           onClick={ () => {
+            addFilter();
             const choosed = document.getElementById('options').value;
             setSelectedColumn(choosed);
-            addFilter();
+            console.log(columnOptions);
+            console.log(filterList);
           } }
         >
           Add Filter
