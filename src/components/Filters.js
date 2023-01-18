@@ -43,15 +43,15 @@ function Filters() {
   }, [newFilter, planetList, setNameFilter]);
 
   function addFilter() {
-    const { planetSpecs,
-      planetSpecs: { column, comparison, value } } = filterList;
+    const { planetSpecs, planetSpecs: { column, comparison, value } } = filterList;
     if (column) {
       setNewFilter([...newFilter, planetSpecs]);
       setFilterByOptions([...filterByOptions, `${column} ${comparison} ${value}`]);
-      setColumns(columns.filter((option) => option !== column));
       setFilterList({ ...filterList,
         planetSpecs: { ...filterList.planetSpecs,
           column: '' } });
+      setColumns(columns.filter((option) => option !== column));
+      console.log(column);
     }
   }
 
